@@ -7,6 +7,8 @@ using UnityEngine;
 public class PlayerMovementTank : MonoBehaviour
 {
 
+
+Animator animator;
 Rigidbody myRigidBody;
 private bool isRunning;
 
@@ -30,6 +32,7 @@ private float stopSpeed = 0f;
     {
          //Get Component in current object with script
         myRigidBody = GetComponent<Rigidbody>();
+        animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
