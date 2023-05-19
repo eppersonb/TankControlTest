@@ -32,33 +32,37 @@ private float stopSpeed = 0f;
     {
          //Get Component in current object with script
         myRigidBody = GetComponent<Rigidbody>();
-        animator = GetComponent<Animator>();
+        animator = GetComponent<Animator>(); // get animator component.
     }
 
     // Update is called once per frame
     void Update()
     {
-        playerMove();
-        
-
+        playerMove(); // this is the playerMove function always updating the players actions
     }
 
     void playerMove()
     {
         moveCheck();
         aimCheck();
+        bool forwardKeyPressed = Input.GetKey(KeyCode.W);
+        bool backwardKeyPressed = Input.GetKey(KeyCode.S);
 
-        if(Input.GetKey(KeyCode.W) && canMove) // move forward
+        if(forwardKeyPressed && canMove) // move forward and set animation state for walking forward.
         {
 
             myRigidBody.AddForce(Vector3.forward * moveSpeed);
+            animator.SetBool("isWalking", true);
             Debug.Log("You are moving forward!");
             setMoving(true);
         }
-        else if(Input.GetKey(KeyCode.S) && canMove) // move Backwards
+
+        else if(backwardKeyPressed && canMove) // move Backwards
         {
             
             myRigidBody.AddForce(Vector3.back * moveSpeed);
+            animator.SetBool("isWalkingBack", true);
+            Debug.Log("You are moving backwards!");
             setMoving(true);
         }
         else if(Input.GetKey(KeyCode.Space))
@@ -66,16 +70,19 @@ private float stopSpeed = 0f;
             
             playerAiming();
         }
-        else
+        else // if nothing is happening, refer to this else statement which serves as the default state.
         {
             isMoving = true;
             isAiming = false;
+            animator.SetBool("isWalking", false);
+            animator.SetBool("isWalkingBack", false);
+            animator.SetBool("isAiming", false);
             //yes
         }
 
     }
 
-    void moveCheck()
+    void moveCheck() // this function checks if the player is moving.
     {
         if(isMoving)
         {
@@ -87,7 +94,7 @@ private float stopSpeed = 0f;
         }
     }
 
-    void aimCheck()
+    void aimCheck() // this function checks if the player is aiming.
     {
         if(isAiming)
         {
@@ -101,7 +108,7 @@ private float stopSpeed = 0f;
         }
         
     }
-    void playerAiming()
+    void playerAiming() // this is the player aiming function.
     {
     
         if(Input.GetKey(KeyCode.Space))
@@ -109,6 +116,7 @@ private float stopSpeed = 0f;
             myRigidBody.AddForce(Vector3.zero);
             setMoving(false);
             setAiming(true);
+            animator.SetBool("isAiming", true);
             Debug.Log("You're aiming, you cannot move!");
         }
         else if(!Input.GetKey(KeyCode.Space))
