@@ -10,6 +10,10 @@ public class PlayerMovementTank : MonoBehaviour
 
 Animator animator;
 Rigidbody myRigidBody;
+
+Vector3 movement;
+
+Quaternion myQuatenion;
 private bool isRunning;
 
 [SerializeField]
@@ -18,12 +22,20 @@ private bool isMoving;
 [SerializeField]
 private bool canMove;
 
+
+
 [SerializeField]
 
 private bool isAiming;
 
 [SerializeField]
 private float moveSpeed = 5f;
+
+[SerializeField]
+private float turnSpeed;
+
+
+
 
 private float stopSpeed = 0f;
 
@@ -47,8 +59,10 @@ private float stopSpeed = 0f;
         aimCheck();
         bool forwardKeyPressed = Input.GetKey(KeyCode.W);
         bool backwardKeyPressed = Input.GetKey(KeyCode.S);
+        bool leftKeyPressed = Input.GetKey(KeyCode.A);
+        bool rightKeyPressed = Input.GetKey(KeyCode.D);
 
-        if(forwardKeyPressed && canMove) // move forward and set animation state for walking forward.
+        if(forwardKeyPressed && canMove && myRigidBody.velocity.z <= 10) // move forward and set animation state for walking forward.
         {
 
             myRigidBody.AddForce(Vector3.forward * moveSpeed);
@@ -56,8 +70,37 @@ private float stopSpeed = 0f;
             Debug.Log("You are moving forward!");
             setMoving(true);
         }
+        
+        if(!forwardKeyPressed)
+        {
+            animator.SetBool("isWalking", false);
+        }
 
-        else if(backwardKeyPressed && canMove) // move Backwards
+        if(leftKeyPressed) // turns left
+        {
+            
+            transform.Rotate(-Vector3.up * turnSpeed);
+
+        }
+
+        if(!leftKeyPressed)
+        {
+            Debug.Log("put something here");
+        }
+
+        if(rightKeyPressed) // turns right
+        {
+           transform.Rotate(Vector3.up * turnSpeed);
+            setMoving(true);
+        }
+        
+        if(!rightKeyPressed)
+        {
+            Debug.Log("put something here");
+        }
+
+
+        if(backwardKeyPressed && canMove && -myRigidBody.velocity.z <= 10) // move Backwards
         {
             
             myRigidBody.AddForce(Vector3.back * moveSpeed);
@@ -65,17 +108,23 @@ private float stopSpeed = 0f;
             Debug.Log("You are moving backwards!");
             setMoving(true);
         }
-        else if(Input.GetKey(KeyCode.Space))
+
+        if(!backwardKeyPressed)
         {
-            
-            playerAiming();
+            animator.SetBool("isWalkingBack", false);
+        }
+
+
+        if(Input.GetKey(KeyCode.Space))
+        {
+            myRigidBody.velocity = Vector3.zero; // This forces the rigid body to be set to zero.
+            playerAiming(); //call player aiming function.
         }
         else // if nothing is happening, refer to this else statement which serves as the default state.
         {
+            
             isMoving = true;
             isAiming = false;
-            animator.SetBool("isWalking", false);
-            animator.SetBool("isWalkingBack", false);
             animator.SetBool("isAiming", false);
             //yes
         }
