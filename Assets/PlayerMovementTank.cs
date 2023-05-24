@@ -24,7 +24,9 @@ private bool isMoving;
 [SerializeField]
 private bool canMove;
 
+private bool isMoveForward;
 
+private bool isMoveBack;
 
 [SerializeField]
 
@@ -64,52 +66,67 @@ private float stopSpeed = 0f;
         
         moveCheck();
         aimCheck();
-        float horizontalInput = Input.GetAxisRaw("Horizontal");
-        float verticalInput = Input.GetAxisRaw("Vertical");
-        Vector3 moveDir = new Vector3(horizontalInput, 0, verticalInput).normalized; //this makes sure the input is no greater than 1
-        Vector3 turnDir = new Vector3(0, 0, verticalInput).normalized;
+        float horizontalInput = Input.GetAxisRaw("Horizontal") * Time.deltaTime * 100;
+        float verticalInput = Input.GetAxisRaw("Vertical") * Time.deltaTime * 6;
+        Vector3 vMoveDir = new Vector3(0, 0, verticalInput).normalized; //this makes sure the input is no greater than 1
+        Vector3 hMoveDir = new Vector3(horizontalInput, 0, 0).normalized;
 
-        Debug.Log(moveDir);
+        
 
-        if(moveDir != Vector3.zero && canMove && myRigidBody.velocity.z <= 10)//This only executes if only you are moving forwads.
+        if(vMoveDir != Vector3.zero && canMove)//This controls back and forth
         {
+            Debug.Log("Walking Forward");
             animator.SetBool("isWalking", true);
-            myRigidBody.AddForce(moveDir * moveSpeed);
+            transform.Translate(0, 0, verticalInput);
+            
         }
 
-        if(moveDir != Vector3.zero && canMove && myRigidBody.velocity.z <= -10)//This only executes if only you are moving backwards.
+        if(hMoveDir != Vector3.zero && canMove) //this controls turns
         {
-            animator.SetBool("isWalkingBack", true);
-            myRigidBody.AddForce(moveDir * -moveSpeed);
+
+			transform.Rotate(0, horizontalInput, 0);
         }
+        
+            
 
-        if(moveDir != Vector3.zero && canMove && myRigidBody.velocity.x <= 10)//This only executes if only you are moving right.
-        {
-            animator.SetBool("isWalking", true);
-            myRigidBody.AddForce(moveDir * moveSpeed);
-        }
-
-        if(moveDir != Vector3.zero && canMove && myRigidBody.velocity.x <= -10)//This only executes if only you are moving left.
-        {
-            animator.SetBool("isWalkingBack", true);
-            myRigidBody.AddForce(moveDir * -moveSpeed);
-        }
+        // if(hMoveDir != Vector3.zero)//This only executes if only you are moving backwards.
+        // {
+  
+        //     Quaternion target = Quaternion.LookRotation(hMoveDir); //this is suppose to handle turning in a direction.
+        //     myRigidBody.MoveRotation(Quaternion.RotateTowards(myRigidBody.rotation, target, turnSpeed));
+            
+        // }
 
 
 
-        if(moveDir != Vector3.zero)
-        {
-            Quaternion target = Quaternion.LookRotation(moveDir); //this is suppose to handle turning in a direction.
-            myRigidBody.MoveRotation(Quaternion.RotateTowards(myRigidBody.rotation, target, turnSpeed));
-        }
+        // if(hMoveDir != Vector3.zero && canMove && myRigidBody.velocity.x <= -10)//This only executes if only you are moving backwards.
+        // {
+
+        //     myRigidBody.AddForce(hMoveDir * -moveSpeed);
+        // }
+        /*
+            This code is driving me insane lol
+        */
+
+        // if(moveDir == Vector3.zero)
+        // {
+        //     Quaternion target = Quaternion.LookRotation(moveDir); //this is suppose to handle turning in a direction.
+        //     myRigidBody.MoveRotation(Quaternion.RotateTowards(myRigidBody.rotation, target, turnSpeed));
+        // }
+
+        // if(moveDir != Vector3.zero)
+        // {
+        //     Quaternion target = Quaternion.LookRotation(moveDir); //this is suppose to handle turning in a direction.
+        //     myRigidBody.MoveRotation(Quaternion.RotateTowards(myRigidBody.rotation, target, turnSpeed));
+        // }
 
 
-        if(moveDir == Vector3.zero) // this happens if no inputs are being pressed.
+        if(vMoveDir == Vector3.zero) // this happens if no inputs are being pressed.
         {
             animator.SetBool("isWalkingBack", false);
             animator.SetBool("isWalking", false);
             myRigidBody.velocity = Vector3.zero;
-            Debug.Log("Stopped");
+            // Debug.Log("Stopped");
             
         }
 
@@ -210,6 +227,16 @@ private float stopSpeed = 0f;
         {
             canMove = false;
         }
+    }
+
+    void forwardCheck()
+    {
+        Debug.Log("Do something");
+    }
+
+    void backwardsCheck()
+    {
+        Debug.Log("Do something");
     }
 
     void aimCheck() // this function checks if the player is aiming.
