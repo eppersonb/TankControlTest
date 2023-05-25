@@ -71,14 +71,21 @@ private float stopSpeed = 0f;
         Vector3 vMoveDir = new Vector3(0, 0, verticalInput).normalized; //this makes sure the input is no greater than 1
         Vector3 hMoveDir = new Vector3(horizontalInput, 0, 0).normalized;
 
-        
 
-        if(vMoveDir != Vector3.zero && canMove)//This controls back and forth
+
+        if(vMoveDir != Vector3.zero && Input.GetKey(KeyCode.W)  && canMove)//This controls forward movement
         {
             Debug.Log("Walking Forward");
             animator.SetBool("isWalking", true);
             transform.Translate(0, 0, verticalInput);
             
+        }
+
+        if(vMoveDir != Vector3.zero && Input.GetKey(KeyCode.S) && canMove) // this controls backwards movement
+        {
+            Debug.Log("is walking backwards");
+            animator.SetBool("isWalkingBack", true);
+            transform.Translate(0, 0, verticalInput);
         }
 
         if(hMoveDir != Vector3.zero && canMove) //this controls turns
@@ -264,7 +271,7 @@ private float stopSpeed = 0f;
             animator.SetBool("isAiming", true);
             Debug.Log("You're aiming, you cannot move!");
         }
-        else if(!Input.GetKey(KeyCode.Space))
+        if(!Input.GetKey(KeyCode.Space))
         {
             setMoving(true);
             setAiming(false);
